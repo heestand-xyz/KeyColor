@@ -1,7 +1,8 @@
+![Example Key Colors from Images](https://github.com/heestand-xyz/KeyColor/blob/main/Assets/KeyColor.png?raw=true)
 
 # Key Color
 
-Extract key colors of images.
+Extract key colors in an images.
 
 ## Install
 
