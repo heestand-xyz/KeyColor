@@ -1,6 +1,8 @@
 
 # Key Color
 
+Extract key colors of images.
+
 ## Install
 
 ```swift
@@ -15,7 +17,8 @@ let color: Color? = try await image.keyColor()
 let colors: [Color] = try await image.keyColors(3)
 ```
 
-> If the image is monochrome no colors will be returned. The default saturation and brightness thresholds are at 50%.
+> If the image is monochrome no colors will be returned.
+> The default saturation and brightness thresholds are at 50%.
 
 ## Functions
 
@@ -31,7 +34,7 @@ extension UIImage {
         interpolation: Graphic.ResolutionInterpolation = .lanczos
     ) async throws -> Color?
     
-    public func keyColors(
+    func keyColors(
         _ maxCount: Int,
         minSaturation: CGFloat = 0.5,
         minBrightness: CGFloat = 0.5,
@@ -53,7 +56,7 @@ extension Graphic {
         interpolation: Graphic.ResolutionInterpolation = .lanczos
     ) async throws -> PixelColor?
     
-    public func keyPixelColors(
+    func keyPixelColors(
         _ maxCount: Int,
         minSaturation: CGFloat = 0.5,
         minBrightness: CGFloat = 0.5,
