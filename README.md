@@ -19,11 +19,12 @@ let colors: [Color] = try await image.keyColors(3)
 ```
 
 > If the image is monochrome no colors will be returned.
+
 > The default saturation and brightness thresholds are at 50%.
 
 ## Functions
 
-### UIImage / NSImage with SwiftUI Color
+### SwiftUI Color
 
 ```swift
 extension UIImage {
@@ -45,7 +46,9 @@ extension UIImage {
 }
 ```
 
-### AsyncGraphics with PixelColor
+> Both UIImage and NSImage are supported.
+
+### PixelColor
 
 ```swift
 extension Graphic {
@@ -66,3 +69,5 @@ extension Graphic {
     ) async throws -> [PixelColor]
 }
 ```
+
+> Powered by [PixelColor](https://github.com/heestand-xyz/PixelColor) and [AsyncGraphics](https://github.com/heestand-xyz/AsyncGraphics)
