@@ -6,69 +6,64 @@ import PixelColor
 
 extension TMImage {
     
-    public func keyColors(
-        maxCount: Int,
+    public func keyColor(
         minSaturation: CGFloat = 0.5,
         minBrightness: CGFloat = 0.5,
-        at resolution: CGSize? = CGSize(width: 100, height: 100),
+        resolution: CGSize? = CGSize(width: 100, height: 100),
         interpolation: Graphic.ResolutionInterpolation = .lanczos
-    ) async throws -> [Color] {
-        try await keyPixelColors(
-            maxCount: maxCount,
+    ) async throws -> Color? {
+        try await keyColors(
+            1,
             minSaturation: minSaturation,
             minBrightness: minBrightness,
-            at: resolution,
+            resolution: resolution,
+            interpolation: interpolation
+        ).first
+    }
+    
+    public func keyColors(
+        _ maxCount: Int,
+        minSaturation: CGFloat = 0.5,
+        minBrightness: CGFloat = 0.5,
+        resolution: CGSize? = CGSize(width: 100, height: 100),
+        interpolation: Graphic.ResolutionInterpolation = .lanczos
+    ) async throws -> [Color] {
+        let graphic: Graphic = try await .image(self)
+        return try await graphic.keyPixelColors(
+            maxCount,
+            minSaturation: minSaturation,
+            minBrightness: minBrightness,
+            resolution: resolution,
             interpolation: interpolation
         )
         .map { color in
             color.color
         }
-    }
-    
-    public func keyPixelColors(
-        maxCount: Int,
-        minSaturation: CGFloat = 0.5,
-        minBrightness: CGFloat = 0.5,
-        at resolution: CGSize? = CGSize(width: 100, height: 100),
-        interpolation: Graphic.ResolutionInterpolation = .lanczos
-    ) async throws -> [PixelColor] {
-        try await Graphic.image(self)
-            .keyPixelColors(
-                maxCount: maxCount,
-                minSaturation: minSaturation,
-                minBrightness: minBrightness,
-                at: resolution,
-                interpolation: interpolation
-            )
     }
 }
 
 extension Graphic {
     
-    public func keyColors(
-        maxCount: Int,
+    public func keyPixelColor(
         minSaturation: CGFloat = 0.5,
         minBrightness: CGFloat = 0.5,
-        at resolution: CGSize? = CGSize(width: 100, height: 100),
+        resolution: CGSize? = CGSize(width: 100, height: 100),
         interpolation: Graphic.ResolutionInterpolation = .lanczos
-    ) async throws -> [Color] {
+    ) async throws -> PixelColor? {
         try await keyPixelColors(
-            maxCount: maxCount,
+            1,
             minSaturation: minSaturation,
             minBrightness: minBrightness,
-            at: resolution,
+            resolution: resolution,
             interpolation: interpolation
-        )
-        .map { color in
-            color.color
-        }
+        ).first
     }
     
     public func keyPixelColors(
-        maxCount: Int,
+        _ maxCount: Int,
         minSaturation: CGFloat = 0.5,
         minBrightness: CGFloat = 0.5,
-        at resolution: CGSize? = CGSize(width: 100, height: 100),
+        resolution: CGSize? = CGSize(width: 100, height: 100),
         interpolation: Graphic.ResolutionInterpolation = .lanczos
     ) async throws -> [PixelColor] {
         precondition(maxCount > 0)
