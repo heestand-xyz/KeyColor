@@ -1,0 +1,69 @@
+{
+  "originHash" : "7261c4cdea7e536d1826876c8d5f1e30e5cd8e3d8cb97a2b2aa21c7cf7ef963c",
+  "pins" : [
+    {
+      "identity" : "asyncgraphics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/AsyncGraphics",
+      "state" : {
+        "revision" : "41d3774b19c6b64cd8d3db4048218aa94a650d67",
+        "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "coregraphicsextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/CoreGraphicsExtensions",
+      "state" : {
+        "revision" : "a10de5109601c6d478b040486c921e3e82a5c3c8",
+        "version" : "1.8.0"
+      }
+    },
+    {
+      "identity" : "pixelcolor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/PixelColor",
+      "state" : {
+        "revision" : "985d12c8339bc0ae08803a0abde32c2e4696c4ce",
+        "version" : "2.2.2"
+      }
+    },
+    {
+      "identity" : "spatialextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/SpatialExtensions",
+      "state" : {
+        "revision" : "f2b83a6928847f8cc9fa792af5f7d003a34b33c9",
+        "version" : "0.1.2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
+      }
+    },
+    {
+      "identity" : "texturemap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/TextureMap",
+      "state" : {
+        "revision" : "7f26073c7dcf4e76dded9ef1cd6adf0a879e0e66",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "videoframes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/VideoFrames",
+      "state" : {
+        "revision" : "3de476e958b765699eb2f98ca42336acfc262f49",
+        "version" : "1.1.1"
+      }
+    }
+  ],
+  "version" : 3
+}
