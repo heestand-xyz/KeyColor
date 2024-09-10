@@ -2,7 +2,7 @@
 
 # Key Color
 
-Extract key colors in an images.
+Find key colors in images.
 
 ## Install
 
