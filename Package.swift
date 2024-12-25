@@ -18,7 +18,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/heestand-xyz/PixelColor",
-            from: "2.2.2"
+            from: "3.0.0"
         ),
         .package(
             url: "https://github.com/heestand-xyz/AsyncGraphics",
