@@ -22,7 +22,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/heestand-xyz/AsyncGraphics",
-            from: "2.1.1"
+            from: "3.0.0"
         ),
         .package(
             url: "https://github.com/heestand-xyz/TextureMap",
