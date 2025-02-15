@@ -18,7 +18,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/heestand-xyz/PixelColor",
-            from: "3.0.0"
+            from: "3.1.0"
         ),
         .package(
             url: "https://github.com/heestand-xyz/AsyncGraphics",
@@ -26,7 +26,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/heestand-xyz/TextureMap",
-            from: "1.0.3"
+            from: "2.1.0"
         ),
     ],
     targets: [
