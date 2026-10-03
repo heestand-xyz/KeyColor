@@ -70,4 +70,27 @@ extension Graphic {
 }
 ```
 
+### Color locations
+
+Use a live `Graphic` directly to get colors and the pixels they came from:
+
+```swift
+let samples = try await graphic.keyColorSamples(
+    5,
+    minSaturation: 0.25,
+    minBrightness: 0.25
+)
+for sample in samples {
+    let color = sample.color.color
+    let point = sample.location
+}
+```
+
+Each `KeyColorSample` contains a `PixelColor` and a normalized `CGPoint`.
+Coordinates run from the top-left `(0, 0)` to the bottom-right `(1, 1)` and
+refer to pixel centers in the sampled image. They remain normalized when
+the image is downsampled. Thresholds are strict; only colors above both
+minimums qualify. The selector returns fewer than the requested count
+when the image has fewer distinct qualifying colors.
+
 > Powered by [PixelColor](https://github.com/heestand-xyz/PixelColor) and [AsyncGraphics](https://github.com/heestand-xyz/AsyncGraphics)
