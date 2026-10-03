@@ -6,9 +6,12 @@ enum KeyColorSelection {
         from rows: [[PixelColor]],
         maxCount: Int,
         minSaturation: CGFloat,
-        minBrightness: CGFloat
+        minBrightness: CGFloat,
+        previousSamples: [KeyColorSample] = [],
+        replacementMargin: CGFloat = 0.08
     ) throws -> [KeyColorSample] {
         precondition(maxCount > 0)
+        precondition(replacementMargin >= 0 && replacementMargin.isFinite)
         guard let width = rows.first?.count, width > 0 else { return [] }
 
         var candidates: [KeyColorSample] = []
@@ -27,31 +30,74 @@ enum KeyColorSelection {
             }
         }
 
-        guard let primary = candidates.max(by: {
-            $0.color.saturation < $1.color.saturation
-        }) else { return [] }
-
-        var selected = [primary]
+        var selected: [KeyColorSample] = []
         while selected.count < maxCount {
             try Task.checkCancellation()
-            var farthest: KeyColorSample?
-            var greatestDistance: CGFloat = 0
-            for candidate in candidates {
-                let distance = selected.reduce(CGFloat.infinity) { closest, sample in
-                    let red = candidate.color.red - sample.color.red
-                    let green = candidate.color.green - sample.color.green
-                    let blue = candidate.color.blue - sample.color.blue
-                    return min(closest, red * red + green * green + blue * blue)
-                }
-                if distance > greatestDistance {
-                    greatestDistance = distance
-                    farthest = candidate
-                }
-            }
-            // A scene can have fewer distinct qualifying colors than requested.
-            guard let farthest else { break }
-            selected.append(farthest)
+            let previous = selected.count < previousSamples.count
+                ? previousSamples[selected.count] : nil
+            guard let next = nextSample(
+                from: candidates,
+                selected: selected,
+                previous: previous,
+                replacementMargin: replacementMargin
+            ) else { break }
+            selected.append(next)
         }
         return selected
+    }
+
+    private static func nextSample(
+        from candidates: [KeyColorSample],
+        selected: [KeyColorSample],
+        previous: KeyColorSample?,
+        replacementMargin: CGFloat
+    ) -> KeyColorSample? {
+        var best: KeyColorSample?
+        var bestScore: CGFloat = 0
+        var incumbent: KeyColorSample?
+        var incumbentScore: CGFloat = 0
+        var closestMatch = CGFloat.infinity
+
+        for candidate in candidates {
+            let score = selected.isEmpty
+                ? candidate.color.saturation
+                : selected.reduce(CGFloat.infinity) {
+                    min($0, colorDistanceSquared(candidate.color, $1.color))
+                }.squareRoot()
+            // Never select the same RGB color twice.
+            guard selected.isEmpty || score > 0 else { continue }
+            // Strict comparison resolves ties in fixed image scan order.
+            if best == nil || score > bestScore {
+                best = candidate
+                bestScore = score
+            }
+
+            if let previous {
+                let colorDistance = colorDistanceSquared(candidate.color, previous.color)
+                // Let a disappeared color be replaced instead of holding stale data.
+                guard colorDistance <= 0.25 * 0.25 else { continue }
+                let dx = candidate.location.x - previous.location.x
+                let dy = candidate.location.y - previous.location.y
+                let match = colorDistance + 0.01 * (dx * dx + dy * dy)
+                if match < closestMatch {
+                    closestMatch = match
+                    incumbent = candidate
+                    incumbentScore = score
+                }
+            }
+        }
+
+        // Favor the previous palette slot until a challenger wins by the margin.
+        if let incumbent, bestScore <= incumbentScore + replacementMargin {
+            return incumbent
+        }
+        return best
+    }
+
+    private static func colorDistanceSquared(_ lhs: PixelColor, _ rhs: PixelColor) -> CGFloat {
+        let red = lhs.red - rhs.red
+        let green = lhs.green - rhs.green
+        let blue = lhs.blue - rhs.blue
+        return red * red + green * green + blue * blue
     }
 }

@@ -93,4 +93,38 @@ the image is downsampled. Thresholds are strict; only colors above both
 minimums qualify. The selector returns fewer than the requested count
 when the image has fewer distinct qualifying colors.
 
+### Stable live colors
+
+Pass the previous **unfiltered** selections back into the sampler to retain
+palette order and nearby locations until another candidate wins by a meaningful
+margin. The match must be within 0.25 RGB distance of the previous color; missing
+colors are replaced by current qualifying pixels. Exact ties use image scan
+order, so the same image and history always give the same result.
+
+Then low-pass filter the selected colors and locations independently:
+
+```swift
+var previous: [KeyColorSample] = []
+var filter = KeyColorFilter(colorResponse: 0.25, locationResponse: 0.2)
+
+// For each live graphic:
+let samples = try await graphic.keyColorSamples(
+    5,
+    minSaturation: 0.25,
+    minBrightness: 0.25,
+    previousSamples: previous,
+    replacementMargin: 0.08
+)
+previous = samples
+let displayedSamples = filter.update(with: samples)
+```
+
+The replacement margin is measured in saturation for the first palette slot,
+and RGB distance from the selected palette for subsequent slots. Passing no
+history performs ordinary selection. Smaller filter response values give
+smoother, slower updates; 1 follows each sample immediately. Color filtering
+uses the shortest hue path and averages saturation and brightness separately,
+preserving their thresholds without mixing complementary colors into gray.
+Reset the history and filter when the source changes or rotates.
+
 > Powered by [PixelColor](https://github.com/heestand-xyz/PixelColor) and [AsyncGraphics](https://github.com/heestand-xyz/AsyncGraphics)

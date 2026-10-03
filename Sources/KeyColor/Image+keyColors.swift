@@ -75,12 +75,20 @@ extension Graphic {
 
     /// Selects distinct key colors while retaining their normalized image locations.
     /// Returns fewer samples when fewer distinct colors pass the thresholds.
+    ///
+    /// For live tracking, pass the previous unfiltered results in `previousSamples`.
+    /// A slot favors the closest current match until another candidate's saturation
+    /// (first slot) or RGB distance (remaining slots) exceeds it by `replacementMargin`.
+    /// No history is retained by this method; identical pixels and history give
+    /// identical results. An empty history uses the ordinary key-color selection.
     public func keyColorSamples(
         _ maxCount: Int,
         minSaturation: CGFloat = 0.5,
         minBrightness: CGFloat = 0.5,
         resolution: CGSize? = CGSize(width: 100, height: 100),
-        interpolation: Graphic.ResolutionInterpolation = .lanczos
+        interpolation: Graphic.ResolutionInterpolation = .lanczos,
+        previousSamples: [KeyColorSample] = [],
+        replacementMargin: CGFloat = 0.08
     ) async throws -> [KeyColorSample] {
         precondition(maxCount > 0)
         try Task.checkCancellation()
@@ -99,7 +107,9 @@ extension Graphic {
             from: rows,
             maxCount: maxCount,
             minSaturation: minSaturation,
-            minBrightness: minBrightness
+            minBrightness: minBrightness,
+            previousSamples: previousSamples,
+            replacementMargin: replacementMargin
         )
     }
 }
