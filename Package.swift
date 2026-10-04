@@ -36,7 +36,8 @@ let package = Package(
                 "AsyncGraphics",
                 "TextureMap",
                 "PixelColor",
-            ]
+            ],
+            resources: [.process("Shaders")]
         ),
         .testTarget(
             name: "KeyColorTests",
