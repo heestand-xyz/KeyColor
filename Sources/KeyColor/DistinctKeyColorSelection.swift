@@ -30,9 +30,17 @@ enum DistinctKeyColorSelection {
                 // A fourth root keeps a visible minority hue competitive with broad backgrounds.
                 // Quadratic saturation weighting gives vivid groups more priority over muted ones.
                 let saturation = min(candidate.sample.color.saturation, 1)
+                let brightness = min(candidate.sample.color.brightness, 1)
+                let hueSeparation = selected.reduce(CGFloat(1)) {
+                    let gap = abs(candidate.sample.color.hue - $1.color.hue)
+                    return min($0, min(gap, 1 - gap))
+                }
+                // Favor another hue family over additional shades of an already represented hue.
+                let hueCoverage = 0.15 + 0.85 * min(hueSeparation * 12, 1)
                 let significance = pow(candidate.population / largest, 0.25)
                     * (0.15 + 0.85 * saturation * saturation)
-                return (candidate.sample, significance * diversity)
+                    * (0.25 + 0.75 * brightness)
+                return (candidate.sample, significance * diversity * hueCoverage)
             }
             guard let best = ranked.max(by: { $0.1 < $1.1 }) else { break }
             var next = best

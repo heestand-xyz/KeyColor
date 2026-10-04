@@ -5,7 +5,7 @@ import Metal
 import PixelColor
 
 extension Graphic {
-    /// Selects distinct, populated hue/brightness groups from every source pixel on the GPU.
+    /// Selects distinct, populated hue/saturation/brightness groups from every source pixel on the GPU.
     /// Colors are saturation-weighted group averages, with normalized group centroid locations.
     /// HDR RGB values are retained. No resizing or CPU pixel-array readback is performed.
     /// Pass unfiltered history to favor a current group until a challenger wins by the margin.
@@ -38,7 +38,7 @@ extension Graphic {
 /// Actor ownership protects cached pipelines. Each invocation owns its buffers through GPU completion.
 private actor DistinctColorHistogram {
     static let shared = DistinctColorHistogram()
-    private let binCount = 96
+    private let binCount = 288
     private var device: MTLDevice?
     private var histogram: MTLComputePipelineState?
     private var reduction: MTLComputePipelineState?

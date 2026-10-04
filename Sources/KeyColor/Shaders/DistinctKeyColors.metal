@@ -3,7 +3,7 @@ using namespace metal;
 
 // Hue wraps at red; brightness is compressed only for grouping, never for output.
 constant uint hueCount = 24;
-constant uint binCount = hueCount * 4;
+constant uint binCount = hueCount * 4 * 3;
 
 struct ColorBin {
     float4 rgbCount;
@@ -51,7 +51,8 @@ kernel void distinctColorHistogram(
         }
         uint hueBin = uint(floor(hue * hueCount + 0.5)) % hueCount;
         uint brightnessBin = min(uint(high / (1 + high) * 4), 3u);
-        uint bin = brightnessBin * hueCount + hueBin;
+        uint saturationBin = min(uint(saturation * 3), 2u);
+        uint bin = (brightnessBin * 3 + saturationBin) * hueCount + hueBin;
         float weight = 0.25 + 0.75 * saturation;
         bins[bin].rgbCount += float4(rgba.rgb * weight, 1);
         bins[bin].xyWeight += float4((float2(position) + 0.5) / float2(width, height), weight, 0);
